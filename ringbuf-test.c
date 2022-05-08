@@ -2198,5 +2198,23 @@ main(int argc, char **argv)
     free(buf);
     free(buf2);
     free(dst);
+
+    /* init test */
+    START_NEW_TEST(test_num);
+    buf = malloc(RINGBUF_SIZE);
+    assert(buf);
+    rb1 = ringbuf_init(buf, RINGBUF_SIZE);
+    assert(rb1);
+    assert(ringbuf_buffer_size(rb1) == ringbuf_capacity(rb1) + 1);
+    assert(ringbuf_bytes_free(rb1) == ringbuf_capacity(rb1));
+    assert(ringbuf_bytes_used(rb1) == 0);
+    assert(!ringbuf_is_full(rb1));
+    assert(ringbuf_is_empty(rb1));
+    assert(ringbuf_tail(rb1) == ringbuf_head(rb1));
+    ringbuf_memset(rb1, 1, ringbuf_buffer_size(rb1));
+    assert(ringbuf_is_full(rb1));
+    assert(!ringbuf_is_empty(rb1));
+    free(buf);
+    END_TEST(test_num);
     return 0;
 }

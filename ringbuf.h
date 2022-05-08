@@ -32,6 +32,18 @@
 typedef struct ringbuf_t ringbuf_t;
 
 /*
+ * Make a memory block to a new ring buffer, the capacity (usable
+ * bytes) will be block size - sizeof(ringbuf_t).
+ *
+ * Returns the new ring buffer object, or 0 if there's not enough
+ * memory to fulfill the request for the given capacity.
+ *
+ * Note: call ringbuf_free on returned buffer not do really free.
+ */
+ringbuf_t*
+ringbuf_init(void *mem, size_t size);
+
+/*
  * Create a new ring buffer with the given capacity (usable
  * bytes). Note that the actual internal buffer size may be one or
  * more bytes larger than the usable capacity, for bookkeeping.

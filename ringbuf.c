@@ -39,6 +39,21 @@ struct ringbuf_t
 };
 
 ringbuf_t*
+ringbuf_init(void *mem, size_t size)
+{
+    ringbuf_t *rb;
+    if (size < sizeof(struct ringbuf_t) + 1)
+    {
+        return 0;
+    }
+    rb = mem;
+    rb->buf = (uint8_t*)mem + sizeof(struct ringbuf_t);
+    rb->size = size - sizeof(struct ringbuf_t) - 1;
+    ringbuf_reset(rb);
+    return rb;
+}
+
+ringbuf_t*
 ringbuf_new(size_t capacity)
 {
     ringbuf_t *rb = malloc(sizeof(struct ringbuf_t));
@@ -73,6 +88,9 @@ void
 ringbuf_free(ringbuf_t *rb)
 {
     assert(rb);
+    if(rb->buf == (uint8_t*)rb+ sizeof(struct ringbuf_t))
+        return;
+
     free((rb)->buf);
     free(rb);
 }
