@@ -115,6 +115,9 @@ ringbuf_tail(const ringbuf_t *rb);
 const void *
 ringbuf_head(const ringbuf_t *rb);
 
+const void *
+ringbuf_base(const ringbuf_t *rb);
+
 /*
  * Locate the first occurrence of character c (converted to an
  * unsigned char) in ring buffer rb, beginning the search at offset
