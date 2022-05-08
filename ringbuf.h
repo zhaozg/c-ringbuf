@@ -31,6 +31,8 @@
 
 typedef struct ringbuf_t ringbuf_t;
 
+size_t ringbuf_struct_size();
+
 /*
  * Make a memory block to a new ring buffer, the capacity (usable
  * bytes) will be block size - sizeof(ringbuf_t).
@@ -205,6 +207,9 @@ ringbuf_read(int fd, ringbuf_t *rb, size_t count);
  */
 void *
 ringbuf_memcpy_from(void *dst, ringbuf_t *src, size_t count);
+
+size_t
+ringbuf_memory_peek(void *dst, ringbuf_t *src, size_t count);
 
 /*
  * This convenience function calls write(2) on the file descriptor fd,

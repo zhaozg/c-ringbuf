@@ -23,6 +23,14 @@
 #include <sys/param.h>
 #include <assert.h>
 
+#ifndef MIN
+static inline
+size_t MIN(size_t a, size_t b)
+{
+    return a < b ? a : b;
+}
+#endif
+
 /*
  * The code is written for clarity, not cleverness or performance, and
  * contains many assert()s to enforce invariant assumptions and catch
@@ -37,6 +45,12 @@ struct ringbuf_t
     uint8_t *head, *tail;
     size_t size;
 };
+
+size_t
+ringbuf_struct_size()
+{
+    return sizeof(struct ringbuf_t);
+}
 
 ringbuf_t*
 ringbuf_init(void *mem, size_t size)
@@ -235,7 +249,7 @@ ringbuf_memcpy_into(ringbuf_t *dst, const void *src, size_t count)
         /* don't copy beyond the end of the buffer */
         assert(bufend > dst->head);
         size_t n = MIN(bufend - dst->head, count - nread);
-        memcpy(dst->head, u8src + nread, n);
+        if (u8src) memcpy(dst->head, u8src + nread, n);
         dst->head += n;
         nread += n;
 
@@ -306,6 +320,23 @@ ringbuf_memcpy_from(void *dst, ringbuf_t *src, size_t count)
     return src->tail;
 }
 
+size_t
+ringbuf_memory_peek(void *dst, ringbuf_t *src, size_t count)
+{
+    void *head = src->head;
+    void *tail = src->tail;
+    void *ret;
+
+    size_t sz = MIN(ringbuf_buffer_size(src), count);
+    ret = ringbuf_memcpy_from(dst, src, sz);
+    assert(ret);
+    (void)ret;
+
+    src->head = head;
+    src->tail = tail;
+    return sz;
+}
+
 ssize_t
 ringbuf_write(int fd, ringbuf_t *rb, size_t count)
 {
@@ -368,3 +399,4 @@ ringbuf_copy(ringbuf_t *dst, ringbuf_t *src, size_t count)
 
     return dst->head;
 }
+
