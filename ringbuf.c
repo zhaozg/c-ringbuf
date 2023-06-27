@@ -19,8 +19,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>
+#ifndef _MSC_VER
 #include <unistd.h>
 #include <sys/param.h>
+#endif
 #include <assert.h>
 
 #ifndef MIN

@@ -28,6 +28,10 @@
 
 #include <stddef.h>
 #include <sys/types.h>
+#if defined(_MSC_VER)
+#include <BaseTsd.h>
+typedef SSIZE_T ssize_t;
+#endif
 
 typedef struct ringbuf_t ringbuf_t;
 
